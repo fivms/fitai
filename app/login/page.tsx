@@ -61,7 +61,7 @@ export default function LoginPage() {
         </h1>
 
         <h2 className="mb-2 text-center text-2xl font-bold">
-  {isSignup ? "أهلًا بك في FitAI 💚" : "أهلًا بك في FitAI 💚"}
+  {isSignup ? "إنشاء حساب جديد" : "💚 أهلًا بك"}
 </h2>
 
         <p className="mb-6 text-center text-gray-400">
