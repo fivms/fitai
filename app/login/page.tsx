@@ -61,14 +61,14 @@ export default function LoginPage() {
         </h1>
 
         <h2 className="mb-2 text-center text-2xl font-bold">
-          {isSignup ? "إنشاء حساب جديد" : "أهلًا بعودتك"}
-        </h2>
+  {isSignup ? "أهلًا بك في FitAI 💚" : "أهلًا بك في FitAI 💚"}
+</h2>
 
         <p className="mb-6 text-center text-gray-400">
-          {isSignup
-            ? "أنشئ حسابك وابدأ رحلتك الصحية."
-            : "سجّل دخولك لمتابعة رحلتك الصحية."}
-        </p>
+  {isSignup
+    ? "أنشئ حسابك وابدأ رحلتك الصحية معنا."
+    : "سجّل دخولك لمتابعة رحلتك الصحية."}
+</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
