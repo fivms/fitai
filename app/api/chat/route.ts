@@ -1,16 +1,14 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 type ChatMessage = {
   role: "user" | "assistant";
   text: string;
 };
 
 export async function POST(request: Request) {
+  const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
   try {
     const body = await request.json();
 
