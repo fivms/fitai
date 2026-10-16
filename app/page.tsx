@@ -111,7 +111,7 @@ export default function Home() {
         </p>
 
         <a
-          href="#calculator"
+          href="/login"
           className="mt-6 inline-block rounded-xl bg-green-400 px-6 py-3 font-bold text-black"
         >
           ابدأ الآن ←
