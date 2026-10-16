@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "./utils/supabase";
 
 type Message = {
   role: "user" | "assistant";
@@ -8,6 +10,31 @@ type Message = {
 };
 
 export default function Home() {
+  const router = useRouter();
+
+const [checkingUser, setCheckingUser] = useState(false);
+
+async function handleStart() {
+  setCheckingUser(true);
+
+  try {
+    const { data, error } = await supabase.auth.getUser();
+
+    if (error || !data.user) {
+      router.push("/login");
+      return;
+    }
+
+    const profileCompleted =
+      data.user.user_metadata?.profile_completed === true;
+
+    router.push(profileCompleted ? "/dashboard" : "/profile");
+  } catch {
+    router.push("/login");
+  } finally {
+    setCheckingUser(false);
+  }
+}
   const [weight, setWeight] = useState("85");
   const [height, setHeight] = useState("175");
   const [goal, setGoal] = useState("75");
@@ -110,12 +137,14 @@ export default function Home() {
           تعرّف على مؤشرات جسمك، نظّم وجباتك، وابدأ ببناء عادات صحية تناسب حياتك.
         </p>
 
-        <a
-          href="/login"
-          className="mt-6 inline-block rounded-xl bg-green-400 px-6 py-3 font-bold text-black"
-        >
-          ابدأ الآن ←
-        </a>
+        <button
+  type="button"
+  onClick={handleStart}
+  disabled={checkingUser}
+  className="mt-6 inline-block rounded-xl bg-green-400 px-6 py-3 font-bold text-black disabled:opacity-50"
+>
+  {checkingUser ? "لحظة واحدة..." : "ابدأ الآن ←"}
+</button>
       </section>
 
       <section
@@ -157,11 +186,12 @@ export default function Home() {
           />
 
           <button
-            onClick={calculate}
-            className="w-full rounded-xl bg-green-400 p-3 font-bold text-black"
-          >
-            احسب النتيجة
-          </button>
+  onClick={handleStart}
+  disabled={checkingUser}
+  className="w-full rounded-xl bg-green-400 p-3 font-bold text-black disabled:opacity-50"
+>
+  {checkingUser ? "لحظة واحدة..." : "سجّل مجانًا واحسب نتيجتك ←"}
+</button>
 
           {result && (
             <p className="mt-5 rounded-xl bg-green-950 p-4 leading-8">
@@ -225,12 +255,15 @@ export default function Home() {
             )}
 
             <button
-              type="submit"
-              disabled={loading || !message.trim()}
-              className="mt-3 w-full rounded-xl bg-green-400 p-3 font-bold text-black disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {loading ? "جاري الإرسال..." : "أرسل للمدرب ←"}
-            </button>
+  type="button"
+  onClick={handleStart}
+  disabled={checkingUser}
+  className="mt-3 w-full rounded-xl bg-green-400 p-3 font-bold text-black disabled:cursor-not-allowed disabled:opacity-50"
+>
+  {checkingUser
+    ? "لحظة واحدة..."
+    : "سجّل مجانًا وتحدث مع مدربك الذكي ←"}
+</button>
           </form>
 
           <p className="mt-4 text-sm leading-7 text-gray-400">

@@ -43,7 +43,19 @@ export default function LoginPage() {
 
         if (error) throw error;
 
-        window.location.href = "/";
+const { data: userData, error: userError } =
+  await supabase.auth.getUser();
+
+if (userError || !userData.user) {
+  throw userError ?? new Error("تعذر التحقق من حسابك.");
+}
+
+const profileCompleted =
+  userData.user.user_metadata?.profile_completed === true;
+
+window.location.href = profileCompleted
+  ? "/dashboard"
+  : "/profile";
       }
     } catch (error) {
       setMessage(
