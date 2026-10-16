@@ -10,10 +10,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [resending, setResending] = useState(false);
+  const [showResend, setShowResend] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage("");
+    setShowResend(false);
     setLoading(true);
 
     try {
@@ -25,11 +27,14 @@ export default function LoginPage() {
 
         if (error) throw error;
 
-        setMessage(
-          data.session
-            ? "تم إنشاء حسابك بنجاح! يمكنك الآن استخدام FitAI."
-            : "تم إنشاء الحساب. تحقق من بريدك الإلكتروني لتأكيده قبل تسجيل الدخول."
-        );
+       if (data.session) {
+  setMessage("تم إنشاء حسابك بنجاح! يمكنك الآن استخدام FitAI.");
+} else {
+  setMessage(
+    "تم إنشاء الحساب أو قد يكون موجودًا مسبقًا. إذا كان تأكيد البريد مطلوبًا، افحص بريدك الإلكتروني."
+  );
+  setShowResend(true);
+}
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -144,7 +149,7 @@ export default function LoginPage() {
             </p>
           )}
 
-          {isSignup && (
+          {isSignup && showResend && (
   <button
     type="button"
     onClick={handleResendConfirmation}
