@@ -9,6 +9,7 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [resending, setResending] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,6 +51,37 @@ export default function LoginPage() {
     }
   }
 
+    async function handleResendConfirmation() {
+    if (!email.trim()) {
+      setMessage("اكتب بريدك الإلكتروني أولًا.");
+      return;
+    }
+
+    setResending(true);
+    setMessage("");
+
+    try {
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: email.trim(),
+        options: {
+          emailRedirectTo: "https://vocal-douhua-75a75e.netlify.app",
+        },
+      });
+
+      if (error) throw error;
+
+      setMessage("تم طلب إعادة إرسال رسالة التحقق. تفقد بريدك الإلكتروني.");
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "تعذرت إعادة إرسال الرسالة. حاول مرة أخرى."
+      );
+    } finally {
+      setResending(false);
+    }
+  }
   return (
     <main
       dir="rtl"
@@ -111,6 +143,19 @@ export default function LoginPage() {
               {message}
             </p>
           )}
+
+          {isSignup && (
+  <button
+    type="button"
+    onClick={handleResendConfirmation}
+    disabled={resending}
+    className="w-full rounded-xl border border-green-700 p-3 text-green-300 disabled:opacity-50"
+  >
+    {resending
+      ? "جارٍ إرسال الرسالة..."
+      : "إعادة إرسال رسالة التحقق"}
+  </button>
+)}
 
           <button
             type="submit"
